@@ -1,0 +1,9 @@
+{
+	"name": "datafactoryshrini-spotifyproject",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "537b441f-94da-4862-83ff-3a5f1090c0c7",
+		"tenantId": "764add34-0d3e-4325-a35c-f50d371b5cb5"
+	}
+}
