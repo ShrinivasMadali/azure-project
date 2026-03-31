@@ -9,9 +9,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "",
+						"value": "@pipeline().parameters.loop_input",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "copyAzureSQLToAdls",
@@ -42,7 +43,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "SELECT * FROM @{item().schema}.@{item().table} WHERE @{item().cdc_col} > ' @{if(empty(item().from_data),activity('last_cdc').output.value[0].cdc,item().from_data)}'",
+										"value": "SELECT * FROM @{item().schema}.@{item().table} WHERE @{item().cdc_col} > ' @{if(empty(item().from_date),activity('last_cdc').output.value[0].cdc,item().from_date)}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -354,6 +355,9 @@
 						"from_date": ""
 					}
 				]
+			},
+			"from_date": {
+				"type": "string"
 			}
 		},
 		"variables": {
