@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ForEach1",
+				"name": "Alerts",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
@@ -43,7 +43,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "SELECT * FROM @{item().schema}.@{item().table} WHERE @{item().cdc_col} > ' @{if(empty(item().from_date),activity('last_cdc').output.value[0].cdc,item().from_date)}'",
+										"value": "SELECT * FROM @{item().schema}.@{item().table} ",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -317,6 +317,37 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Alerts",
+						"dependencyConditions": [
+							"Failed",
+							"Skipped",
+							"Succeeded",
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": "https://prod-17.northcentralus.logic.azure.com:443/workflows/9ea59173a99c496cb40c82c03af5bc37/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=5fGGKtZQNRZIWtM-eL8HisZJ_x3EgAMl7Yr2ykmhzgE",
+					"body": {
+						"value": "{\n    \"pipeline_name\" : \"@{pipeline().Pipeline}\",\n    \"pipeline_runID\" : \"@{pipeline().RunId}\"\n}",
+						"type": "Expression"
+					}
 				}
 			}
 		],
